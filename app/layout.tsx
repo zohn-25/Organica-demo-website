@@ -9,6 +9,7 @@ import { AuthProvider } from '@/lib/auth/AuthContext';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { PageTransitionCurtain } from '@/components/providers/PageTransitionCurtain';
+import { MobileBottomNav } from '@/components/mobile/MobileBottomNav';
 
 const fraunces = localFont({
   src: [
@@ -92,6 +93,7 @@ export default function RootLayout({
                 <main className="min-h-screen">{children}</main>
                 <Footer />
                 <CartDrawer />
+                <MobileBottomNav />
               </ToastProvider>
             </CartProvider>
           </AuthProvider>
