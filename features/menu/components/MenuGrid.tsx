@@ -139,6 +139,7 @@ export function MenuGrid() {
             return (
               <button
                 key={tab.id}
+                aria-pressed={isActive}
                 onClick={() => {
                   setActiveCategory(tab.id);
                 }}

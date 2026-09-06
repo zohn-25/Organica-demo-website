@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Fraunces, Manrope } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -10,18 +10,28 @@ import { ToastProvider } from '@/components/providers/ToastProvider';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { PageTransitionCurtain } from '@/components/providers/PageTransitionCurtain';
 
-const fraunces = Fraunces({
+const fraunces = localFont({
+  src: [
+    { path: '../public/fonts/Fraunces-400.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Fraunces-600.woff2', weight: '600', style: 'normal' },
+    { path: '../public/fonts/Fraunces-700.woff2', weight: '700', style: 'normal' },
+    { path: '../public/fonts/Fraunces-800.woff2', weight: '800', style: 'normal' },
+    { path: '../public/fonts/Fraunces-900.woff2', weight: '900', style: 'normal' },
+  ],
   variable: '--font-heading',
-  subsets: ['latin'],
   display: 'swap',
-  weight: ['400', '600', '700', '800', '900'],
 });
 
-const manrope = Manrope({
+const manrope = localFont({
+  src: [
+    { path: '../public/fonts/Manrope-400.woff2', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Manrope-500.woff2', weight: '500', style: 'normal' },
+    { path: '../public/fonts/Manrope-600.woff2', weight: '600', style: 'normal' },
+    { path: '../public/fonts/Manrope-700.woff2', weight: '700', style: 'normal' },
+    { path: '../public/fonts/Manrope-800.woff2', weight: '800', style: 'normal' },
+  ],
   variable: '--font-body',
-  subsets: ['latin'],
   display: 'swap',
-  weight: ['400', '500', '600', '700', '800'],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://organica-guwahati.com';

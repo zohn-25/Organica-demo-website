@@ -43,6 +43,7 @@ export function CategoryChip({
   return (
     <button
       onClick={onClick}
+      aria-pressed={isActive}
       className={cn(
         'group flex items-center gap-2.5 px-5 py-3 rounded-full text-sm font-body font-bold transition-all duration-200 whitespace-nowrap cursor-pointer select-none',
         isActive
