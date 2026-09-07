@@ -27,7 +27,7 @@ export function Navbar() {
           : 'bg-transparent py-4'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo */}
         <Logo />
 
@@ -60,7 +60,7 @@ export function Navbar() {
         </nav>
 
         {/* Right side: Sign In button, Social Icons, and Cart Bag */}
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-2 sm:gap-3.5">
           {/* Sign In Pill Button (Clean rounded pill matching reference design) */}
           <button
             onClick={() => alert('Organica Member Portal — Sign in')}
@@ -124,12 +124,12 @@ export function Navbar() {
           {/* Cart Bag Icon */}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="cursor-pointer relative p-2.5 rounded-full bg-[#FFFFFF] border border-[#E8E3D8] hover:border-[#141412] text-[#141412] hover:bg-[#F4EFE6] transition-all duration-200 shadow-xs flex items-center justify-center group"
+            className="cursor-pointer relative p-2 sm:p-2.5 rounded-full bg-[#FFFFFF] border border-[#E8E3D8] hover:border-[#141412] text-[#141412] hover:bg-[#F4EFE6] transition-all duration-200 shadow-xs flex items-center justify-center group"
             aria-label="View shopping bag"
           >
-            <ShoppingBag className="w-5 h-5 transition-transform group-hover:scale-110" />
+            <ShoppingBag className="w-4.5 h-4.5 sm:w-5 sm:h-5 transition-transform group-hover:scale-110" />
             {totalCount > 0 ? (
-              <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-[#F2B705] text-[#141412] text-[10px] font-extrabold flex items-center justify-center shadow-xs">
+              <span className="absolute -top-1 -right-1 w-4.5 h-4.5 sm:w-5 sm:h-5 rounded-full bg-[#F2B705] text-[#141412] text-[9px] sm:text-[10px] font-extrabold flex items-center justify-center shadow-xs">
                 {totalCount}
               </span>
             ) : null}
@@ -138,10 +138,10 @@ export function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-full text-[#141412] hover:bg-[#E8E3D8] transition-colors cursor-pointer"
+            className="md:hidden p-1.5 sm:p-2 rounded-full text-[#141412] hover:bg-[#E8E3D8] transition-colors cursor-pointer"
             aria-label="Toggle navigation menu"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
           </button>
         </div>
       </div>
