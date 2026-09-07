@@ -59,6 +59,10 @@ export function MobileBottomNav({
     }
   };
 
+  if (pathname?.startsWith('/dish') || pathname === '/checkout') {
+    return null;
+  }
+
   return (
     <div className="block md:hidden fixed bottom-0 left-0 right-0 z-40 select-none pb-safe">
       {/* Frosted Glass Container matching reference */}

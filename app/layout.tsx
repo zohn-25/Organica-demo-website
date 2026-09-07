@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
@@ -11,6 +11,14 @@ import { ToastProvider } from '@/components/providers/ToastProvider';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
 import { PageTransitionCurtain } from '@/components/providers/PageTransitionCurtain';
 import { MobileBottomNav } from '@/components/mobile/MobileBottomNav';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#1FA882',
+};
 
 const fraunces = localFont({
   src: [

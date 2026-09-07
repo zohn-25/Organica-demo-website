@@ -27,6 +27,12 @@
     --color-mustard-light: #F5C842;
     --color-mustard-primary: #F2B705;
     --color-mustard-dark: #D49E00;
+
+    /* Mobile Safe Area Insets */
+    --sat: env(safe-area-inset-top, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
   }
 
   html {
@@ -41,11 +47,25 @@
     color: var(--color-dark);
     overflow-x: hidden;
     min-height: 100vh;
+    min-height: 100dvh;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
   }
+}
+
+/* Mobile Safe Area Inset Utilities */
+.pb-safe {
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+}
+
+.pb-safe-tight {
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+}
+
+.pt-safe {
+  padding-top: max(16px, env(safe-area-inset-top, 16px));
 }
 
 /* Custom Utilities */
