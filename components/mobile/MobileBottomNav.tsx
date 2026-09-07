@@ -64,9 +64,8 @@ export function MobileBottomNav({
   }
 
   return (
-    <div className="block md:hidden fixed bottom-0 left-0 right-0 z-40 select-none pb-safe">
-      {/* Frosted Glass Container matching reference */}
-      <div className="bg-[#FAF8F3]/95 backdrop-blur-xl border-t border-[#E8E3D8] px-3 sm:px-6 py-2 sm:py-2.5 shadow-[0_-8px_24px_rgba(20,20,18,0.06)]">
+    <div className="block md:hidden fixed bottom-0 left-0 right-0 z-40 select-none bg-[#FAF8F3]/95 backdrop-blur-xl border-t border-[#E8E3D8] shadow-[0_-8px_24px_rgba(20,20,18,0.06)] pb-[env(safe-area-inset-bottom,0px)]">
+      <div className="px-3 sm:px-6 py-2 sm:py-2.5">
         <div className="flex items-center justify-between max-w-sm mx-auto">
           {/* Home Tab */}
           <button

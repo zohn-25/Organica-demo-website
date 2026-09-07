@@ -57,15 +57,15 @@
 
 /* Mobile Safe Area Inset Utilities */
 .pb-safe {
-  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .pb-safe-tight {
-  padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .pt-safe {
-  padding-top: max(16px, env(safe-area-inset-top, 16px));
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 /* Custom Utilities */
