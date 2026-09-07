@@ -124,11 +124,11 @@ export function HeroSection() {
           </svg>
         </div>
 
-        {/* The Black Slate Panel on the right: extended height (-top-6 to -bottom-24) and wider (62%) to cover cards seamlessly */}
+        {/* The Black Slate Panel on the right: pushed back so Contact link in navbar and editorial content stay 100% visible on light cream backdrop */}
         <div
-          className="absolute -top-6 -bottom-24 right-0 w-full lg:w-[62%] xl:w-[60%] bg-[#141412] shadow-2xl overflow-hidden"
+          className="absolute -top-6 -bottom-24 right-0 w-full md:w-[58%] lg:w-[54%] xl:w-[55%] bg-[#141412] shadow-2xl overflow-hidden"
           style={{
-            clipPath: 'polygon(26% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            clipPath: 'polygon(46% 0%, 100% 0%, 100% 100%, 0% 100%)',
           }}
         >
           {/* Tall Gourmet Culinary Backdrop: Red chilies, leafy radishes, zucchini discs, sweet corn & deep slate */}
@@ -154,9 +154,9 @@ export function HeroSection() {
           animate="visible"
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
             {/* ── Left Column: Headline, Description & Buy Button (Matching Reference Exactly) ── */}
-            <motion.div variants={textVariants} className="lg:col-span-6 space-y-4 lg:space-y-5">
+            <motion.div variants={textVariants} className="md:col-span-6 lg:col-span-6 space-y-4 lg:space-y-5">
               {/* Kicker Subtitle */}
               <span className="text-xs sm:text-sm font-body font-bold text-[#2E5A36] uppercase tracking-[0.25em] block">
                 Organic • Seed-Oil Free • Guwahati
@@ -206,7 +206,7 @@ export function HeroSection() {
             </motion.div>
 
             {/* ── Right Column: Central Gourmet Salad Bowl & Flying Herbs ── */}
-            <div className="lg:col-span-6 relative flex items-center justify-center min-h-[320px] sm:min-h-[380px] lg:min-h-[420px]">
+            <div className="md:col-span-6 lg:col-span-6 relative flex items-center justify-center min-h-[320px] sm:min-h-[380px] lg:min-h-[420px]">
               {/* Wooden Spice Spoon top-left */}
               <motion.div
                 variants={fromTopLeft}

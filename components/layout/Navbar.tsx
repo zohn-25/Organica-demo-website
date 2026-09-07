@@ -32,7 +32,7 @@ export function Navbar() {
         <Logo />
 
         {/* Center Nav Links (Matching reference: Menu, Delivery, About Us, Contact) */}
-        <nav className="hidden md:flex items-center gap-7 lg:gap-9 font-body text-sm font-semibold text-[#141412]">
+        <nav className="hidden md:flex items-center gap-6 lg:gap-8 xl:gap-9 font-body text-xs xl:text-sm font-semibold text-[#141412] md:mr-auto md:ml-8 lg:ml-14 xl:ml-20">
           <Link
             href="/menu"
             className="hover:text-[#2E5A36] transition-colors relative py-1"
