@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   MapPin,
   Search,
@@ -28,6 +29,7 @@ import { useCart } from '@/features/cart/CartContext';
 import { formatINR } from '@/lib/utils';
 import { useToast } from '@/components/providers/ToastProvider';
 import { RESTAURANT_INFO } from '@/lib/constants';
+import { DishDetailModal } from '@/components/mobile/DishDetailModal';
 
 interface CategoryIconItem {
   id: MenuCategoryId;
@@ -52,6 +54,7 @@ const SEGMENT_TABS = [
 ];
 
 export function MobileAppView() {
+  const router = useRouter();
   const { addToCart } = useCart();
   const { showToast } = useToast();
 
@@ -60,6 +63,13 @@ export function MobileAppView() {
   const [selectedSegment, setSelectedSegment] = useState<string>('all');
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [addedItemIds, setAddedItemIds] = useState<Record<string, boolean>>({});
+  const [selectedDishForModal, setSelectedDishForModal] = useState<MenuItem | null>(null);
+  const [isDishModalOpen, setIsDishModalOpen] = useState(false);
+
+  const openDishDetail = (dish: MenuItem) => {
+    setSelectedDishForModal(dish);
+    setIsDishModalOpen(true);
+  };
 
   // Toggle favorite
   const toggleFavorite = (itemId: string, itemName: string) => {
@@ -345,7 +355,8 @@ export function MobileAppView() {
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-xl sm:rounded-2xl border border-[#E8E3D8] shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
+                onClick={() => openDishDetail(item)}
+                className="bg-white rounded-xl sm:rounded-2xl border border-[#E8E3D8] shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group cursor-pointer active:scale-98"
               >
                 {/* Image Container with Floating Favorite & Prep Badge */}
                 <div className="relative w-full aspect-[4/3] bg-[#FAF8F3] overflow-hidden">
@@ -359,7 +370,10 @@ export function MobileAppView() {
 
                   {/* Floating Favorite Heart in circle */}
                   <button
-                    onClick={() => toggleFavorite(item.id, item.name)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(item.id, item.name);
+                    }}
                     className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#141412] hover:text-[#B53424] shadow-xs transition-colors cursor-pointer z-10"
                     aria-label={`Favorite ${item.name}`}
                   >
@@ -407,7 +421,10 @@ export function MobileAppView() {
 
                     {/* Quick Add Button */}
                     <button
-                      onClick={() => handleAddToCart(item)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item);
+                      }}
                       aria-label={`Add ${item.name} to bag`}
                       className={`cursor-pointer w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${
                         isAdded
@@ -446,7 +463,8 @@ export function MobileAppView() {
             return (
               <div
                 key={item.id}
-                className="bg-white rounded-xl sm:rounded-2xl border border-[#E8E3D8] shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group"
+                onClick={() => openDishDetail(item)}
+                className="bg-white rounded-xl sm:rounded-2xl border border-[#E8E3D8] shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group cursor-pointer active:scale-98"
               >
                 {/* Image Container with Floating Favorite & Prep Badge */}
                 <div className="relative w-full aspect-[4/3] bg-[#FAF8F3] overflow-hidden">
@@ -460,7 +478,10 @@ export function MobileAppView() {
 
                   {/* Floating Favorite Heart in circle */}
                   <button
-                    onClick={() => toggleFavorite(item.id, item.name)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(item.id, item.name);
+                    }}
                     className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center text-[#141412] hover:text-[#B53424] shadow-xs transition-colors cursor-pointer z-10"
                     aria-label={`Favorite ${item.name}`}
                   >
@@ -503,7 +524,10 @@ export function MobileAppView() {
                     </span>
 
                     <button
-                      onClick={() => handleAddToCart(item)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item);
+                      }}
                       aria-label={`Add ${item.name} to bag`}
                       className={`cursor-pointer w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${
                         isAdded
@@ -561,6 +585,17 @@ export function MobileAppView() {
           </div>
         </div>
       </div>
+
+      {/* ── DISH DETAIL MODAL (Matching Reference UI 100%) ── */}
+      <DishDetailModal
+        dish={selectedDishForModal}
+        isOpen={isDishModalOpen}
+        onClose={() => setIsDishModalOpen(false)}
+        onGoToCheckout={() => {
+          setIsDishModalOpen(false);
+          router.push('/checkout');
+        }}
+      />
     </div>
   );
 }

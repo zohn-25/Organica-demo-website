@@ -446,3 +446,29 @@ export const MENU_ITEMS: MenuItem[] = [
     image: '/images/basa-bowl.jpg',
   },
 ];
+
+export function findDishById(id: string): MenuItem | undefined {
+  const foundMenu = MENU_ITEMS.find((m) => m.id === id);
+  if (foundMenu) return foundMenu;
+
+  const foundSig = SIGNATURE_BOWLS.find((s) => s.id === id);
+  if (foundSig) {
+    return {
+      id: foundSig.id,
+      name: foundSig.name,
+      category: 'power-plates',
+      price: foundSig.price,
+      description: foundSig.description,
+      isVeg: foundSig.isVeg,
+      image: foundSig.image,
+      calories: foundSig.calories,
+      protein: foundSig.protein,
+      rating: 4.9,
+      reviewsCount: 350,
+      badge: "Chef's Signature",
+      featured: true,
+    };
+  }
+  return undefined;
+}
+

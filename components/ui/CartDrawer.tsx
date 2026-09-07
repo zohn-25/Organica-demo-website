@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { X, Plus, Minus, Trash2, ShoppingBag, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useCart } from '@/features/cart/CartContext';
 import { formatINR } from '@/lib/utils';
 import { VegIndicator } from './Badge';
-import { createOrder } from '@/lib/api/orders';
 import { useToast } from '@/components/providers/ToastProvider';
 
 export function CartDrawer() {
+  const router = useRouter();
   const { showToast } = useToast();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const {
     cart,
     isCartOpen,
@@ -25,47 +25,10 @@ export function CartDrawer() {
     totalProtein,
   } = useCart();
 
-  const handleCheckout = async () => {
-    if (cart.length === 0 || isCheckingOut) return;
-
-    setIsCheckingOut(true);
-    try {
-      const orderPayload = {
-        items: cart,
-        subtotal: totalPrice,
-        tax: Math.round(totalPrice * 0.05), // 5% GST
-        deliveryFee: 0, // Free local delivery
-        total: totalPrice,
-        customer: {
-          name: 'Organica Guest Diner',
-          phone: '+91 98450 12345',
-          address: 'Beltola Tiniali, Guwahati, Assam 781028',
-          instructions: 'Leave at reception / ring bell',
-        },
-        paymentMethod: 'upi' as const,
-      };
-
-      const result = await createOrder(orderPayload);
-
-      if (result.success) {
-        showToast({
-          type: 'success',
-          title: `Order #${result.orderId} Placed!`,
-          message: `Kitchen prep started (~${result.estimatedDeliveryMinutes}m). Bagasse bowls dispatched soon.`,
-          duration: 6000,
-        });
-        clearCart();
-        setIsCartOpen(false);
-      }
-    } catch {
-      showToast({
-        type: 'error',
-        title: 'Checkout Failed',
-        message: 'Could not connect to kitchen order system. Please call directly.',
-      });
-    } finally {
-      setIsCheckingOut(false);
-    }
+  const handleProceedToCheckout = () => {
+    if (cart.length === 0) return;
+    setIsCartOpen(false);
+    router.push('/checkout');
   };
 
   if (!isCartOpen) return null;
@@ -133,76 +96,89 @@ export function CartDrawer() {
 
                 {/* Items */}
                 <div className="space-y-3">
-                  {cart.map(({ item, quantity }) => (
-                    <div
-                      key={item.id}
-                      className="bg-white rounded-2xl p-3.5 border border-[#E8E3D8] flex gap-3 shadow-xs"
-                    >
-                      <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-[#FAF8F3] shrink-0">
-                        {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-[#EBF4ED] flex items-center justify-center text-xs text-[#2E5A36]">
-                            Bowl
-                          </div>
-                        )}
-                      </div>
+                  {cart.map(({ cartLineId, item, quantity, selectedAddOns }) => {
+                    const lineKey = cartLineId || item.id;
+                    const addOnsPrice = (selectedAddOns || []).reduce((s, a) => s + a.price, 0);
+                    const lineTotal = (item.price + addOnsPrice) * quantity;
 
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div className="flex items-start justify-between gap-1">
-                          <div>
-                            <div className="flex items-center gap-1.5 mb-0.5">
-                              <VegIndicator isVeg={item.isVeg} className="scale-75 origin-left" />
-                              <h4 className="font-heading font-bold text-sm text-[#141412] line-clamp-1">
-                                {item.name}
-                              </h4>
+                    return (
+                      <div
+                        key={lineKey}
+                        className="bg-white rounded-2xl p-3.5 border border-[#E8E3D8] flex gap-3 shadow-xs"
+                      >
+                        <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-[#FAF8F3] shrink-0">
+                          {item.image ? (
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-[#EBF4ED] flex items-center justify-center text-xs text-[#2E5A36]">
+                              Bowl
                             </div>
-                            <span className="text-xs font-heading font-extrabold text-[#2E5A36]">
-                              {formatINR(item.price * quantity)}
-                            </span>
-                          </div>
-
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-[#6B685F] hover:text-[#B53424] p-1 cursor-pointer transition-colors"
-                            title="Remove item"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          )}
                         </div>
 
-                        {/* Quantity Controls */}
-                        <div className="flex items-center justify-between pt-1">
-                          <span className="text-[11px] text-[#6B685F] font-mono">
-                            {item.protein ? `${item.protein * quantity}g Protein` : 'Fresh Clean Eat'}
-                          </span>
+                        <div className="flex-1 flex flex-col justify-between">
+                          <div className="flex items-start justify-between gap-1">
+                            <div>
+                              <div className="flex items-center gap-1.5 mb-0.5">
+                                <VegIndicator isVeg={item.isVeg} className="scale-75 origin-left" />
+                                <h4 className="font-heading font-bold text-sm text-[#141412] line-clamp-1">
+                                  {item.name}
+                                </h4>
+                              </div>
+                              <span className="text-xs font-heading font-extrabold text-[#2E5A36]">
+                                {formatINR(lineTotal)}
+                              </span>
 
-                          <div className="flex items-center gap-2 bg-[#FAF8F3] border border-[#E8E3D8] rounded-full px-2 py-0.5">
+                              {/* Selected Add-ons Pill */}
+                              {selectedAddOns && selectedAddOns.length > 0 && (
+                                <p className="text-[10px] text-[#6B685F] font-body mt-0.5 line-clamp-1">
+                                  + {selectedAddOns.map((a) => a.name).join(', ')}
+                                </p>
+                              )}
+                            </div>
+
                             <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="text-[#141412] hover:text-[#2E5A36] p-0.5 cursor-pointer"
+                              onClick={() => removeFromCart(lineKey)}
+                              className="text-[#6B685F] hover:text-[#B53424] p-1 cursor-pointer transition-colors"
+                              title="Remove item"
                             >
-                              <Minus className="w-3 h-3" />
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
-                            <span className="font-bold text-xs font-mono min-w-3 text-center text-[#141412]">
-                              {quantity}
+                          </div>
+
+                          {/* Quantity Controls */}
+                          <div className="flex items-center justify-between pt-1">
+                            <span className="text-[11px] text-[#6B685F] font-mono">
+                              {item.protein ? `${item.protein * quantity}g Protein` : 'Fresh Clean Eat'}
                             </span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="text-[#141412] hover:text-[#2E5A36] p-0.5 cursor-pointer"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
+
+                            <div className="flex items-center gap-2 bg-[#FAF8F3] border border-[#E8E3D8] rounded-full px-2 py-0.5">
+                              <button
+                                onClick={() => updateQuantity(lineKey, -1)}
+                                className="text-[#141412] hover:text-[#2E5A36] p-0.5 cursor-pointer"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="font-bold text-xs font-mono min-w-3 text-center text-[#141412]">
+                                {quantity}
+                              </span>
+                              <button
+                                onClick={() => updateQuantity(lineKey, 1)}
+                                className="text-[#141412] hover:text-[#2E5A36] p-0.5 cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 <button
@@ -246,21 +222,11 @@ export function CartDrawer() {
               </div>
 
               <button
-                onClick={handleCheckout}
-                disabled={isCheckingOut}
-                className="w-full cursor-pointer py-3.5 px-6 rounded-full bg-[#F2B705] hover:bg-[#D49E00] text-[#141412] font-body font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-98 disabled:opacity-75 disabled:cursor-not-allowed"
+                onClick={handleProceedToCheckout}
+                className="w-full cursor-pointer py-3.5 px-6 rounded-full bg-[#F2B705] hover:bg-[#D49E00] text-[#141412] font-body font-extrabold text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-98"
               >
-                {isCheckingOut ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin text-[#141412]" />
-                    <span>Dispatching Order to Kitchen...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Proceed to Clean Checkout</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
+                <span>Proceed to Clean Checkout</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
 
               <div className="flex items-center justify-center gap-1.5 text-[11px] text-[#6B685F] text-center pt-1">

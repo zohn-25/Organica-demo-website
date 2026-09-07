@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/ui/Logo';
 import { useCart } from '@/features/cart/CartContext';
 
 export function Navbar() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { totalCount, setIsCartOpen } = useCart();
@@ -123,7 +125,13 @@ export function Navbar() {
 
           {/* Cart Bag Icon */}
           <button
-            onClick={() => setIsCartOpen(true)}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                router.push('/checkout');
+              } else {
+                setIsCartOpen(true);
+              }
+            }}
             className="cursor-pointer relative p-2 sm:p-2.5 rounded-full bg-[#FFFFFF] border border-[#E8E3D8] hover:border-[#141412] text-[#141412] hover:bg-[#F4EFE6] transition-all duration-200 shadow-xs flex items-center justify-center group"
             aria-label="View shopping bag"
           >

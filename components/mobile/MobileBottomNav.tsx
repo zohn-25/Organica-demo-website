@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Home, Heart, ShoppingBag, MapPin } from 'lucide-react';
 import { useCart } from '@/features/cart/CartContext';
 
@@ -15,6 +16,7 @@ export function MobileBottomNav({
   onTabChange,
   favoritesCount = 0,
 }: MobileBottomNavProps) {
+  const router = useRouter();
   const { totalCount, setIsCartOpen } = useCart();
   const [currentTab, setCurrentTab] = useState(activeTab);
 
@@ -25,7 +27,7 @@ export function MobileBottomNav({
     }
 
     if (tab === 'order') {
-      setIsCartOpen(true);
+      router.push('/checkout');
     } else if (tab === 'home') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (tab === 'kitchen') {

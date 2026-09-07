@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Star, Plus, Check } from 'lucide-react';
 import { MenuItem } from '../types';
 import { VegIndicator } from '@/components/ui/Badge';
@@ -17,7 +18,8 @@ export function MenuCard({ item }: MenuCardProps) {
   const [justAdded, setJustAdded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = (e: React.MouseEvent) => {
+    e.stopPropagation();
     addToCart(item);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1200);
@@ -26,7 +28,10 @@ export function MenuCard({ item }: MenuCardProps) {
   return (
     <div className="group relative bg-[#FFFFFF] rounded-3xl p-4 sm:p-5 border border-[#E8E3D8] transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between overflow-hidden">
       {/* Top Image Preview with Rounded Corner (Echoing Reference Design) */}
-      <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden bg-[#FAF8F3] mb-4">
+      <Link
+        href={`/dish/${item.id}`}
+        className="block relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden bg-[#FAF8F3] mb-4 cursor-pointer"
+      >
         {/* Shimmer Skeleton placeholder while decoding */}
         {!imageLoaded && <div className="absolute inset-0 skeleton z-0" />}
 
@@ -67,15 +72,17 @@ export function MenuCard({ item }: MenuCardProps) {
             <span>{item.rating || '4.9'}</span>
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Content Area matching reference food cards */}
       <div className="flex-1 flex flex-col justify-between">
         <div className="space-y-1.5">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-heading font-bold text-base text-[#141412] leading-snug group-hover:text-[#2E5A36] transition-colors duration-200 line-clamp-1">
-              {item.name}
-            </h3>
+            <Link href={`/dish/${item.id}`} className="hover:underline">
+              <h3 className="font-heading font-bold text-base text-[#141412] leading-snug group-hover:text-[#2E5A36] transition-colors duration-200 line-clamp-1">
+                {item.name}
+              </h3>
+            </Link>
             <span className="font-heading font-black text-base text-[#141412] shrink-0">
               {formatINR(item.price)}
             </span>

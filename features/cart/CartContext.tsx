@@ -3,16 +3,26 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { MenuItem } from '@/features/menu/types';
 
+export interface DishAddOn {
+  id: string;
+  name: string;
+  price: number;
+  image?: string;
+  iconName?: string;
+}
+
 export interface CartItem {
+  cartLineId: string;
   item: MenuItem;
   quantity: number;
+  selectedAddOns?: DishAddOn[];
 }
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (item: MenuItem) => void;
-  removeFromCart: (itemId: string) => void;
-  updateQuantity: (itemId: string, delta: number) => void;
+  addToCart: (item: MenuItem, quantity?: number, selectedAddOns?: DishAddOn[]) => void;
+  removeFromCart: (cartLineId: string) => void;
+  updateQuantity: (cartLineId: string, delta: number) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
@@ -33,7 +43,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const saved = localStorage.getItem('organica_cart_v2');
       if (saved) {
-        setCart(JSON.parse(saved));
+        const parsed: CartItem[] = JSON.parse(saved);
+        // Ensure every item has a cartLineId
+        const sanitized = parsed.map((ci, idx) => ({
+          ...ci,
+          cartLineId: ci.cartLineId || `${ci.item?.id || 'item'}-${idx}`,
+          selectedAddOns: ci.selectedAddOns || [],
+        }));
+        setCart(sanitized);
       }
     } catch {
       // ignore
@@ -49,28 +66,59 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart]);
 
-  const addToCart = (item: MenuItem) => {
+  const addToCart = (
+    item: MenuItem,
+    quantity: number = 1,
+    selectedAddOns: DishAddOn[] = []
+  ) => {
     setCart((prev) => {
-      const existing = prev.find((ci) => ci.item.id === item.id);
-      if (existing) {
-        return prev.map((ci) =>
-          ci.item.id === item.id ? { ...ci, quantity: ci.quantity + 1 } : ci
+      const addOnsKey = selectedAddOns
+        .map((a) => a.id)
+        .sort()
+        .join('-');
+      const targetLineId = `${item.id}${addOnsKey ? `-${addOnsKey}` : ''}`;
+
+      const existingIndex = prev.findIndex(
+        (ci) =>
+          ci.cartLineId === targetLineId ||
+          (ci.item.id === item.id &&
+            (ci.selectedAddOns || []).map((a) => a.id).sort().join('-') === addOnsKey)
+      );
+
+      if (existingIndex > -1) {
+        return prev.map((ci, idx) =>
+          idx === existingIndex
+            ? { ...ci, quantity: ci.quantity + quantity }
+            : ci
         );
       }
-      return [...prev, { item, quantity: 1 }];
+
+      return [
+        ...prev,
+        {
+          cartLineId: targetLineId,
+          item,
+          quantity: Math.max(1, quantity),
+          selectedAddOns,
+        },
+      ];
     });
     setIsCartOpen(true);
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCart((prev) => prev.filter((ci) => ci.item.id !== itemId));
+  const removeFromCart = (cartLineId: string) => {
+    setCart((prev) =>
+      prev.filter(
+        (ci) => ci.cartLineId !== cartLineId && ci.item.id !== cartLineId
+      )
+    );
   };
 
-  const updateQuantity = (itemId: string, delta: number) => {
+  const updateQuantity = (cartLineId: string, delta: number) => {
     setCart((prev) => {
       return prev
         .map((ci) => {
-          if (ci.item.id === itemId) {
+          if (ci.cartLineId === cartLineId || ci.item.id === cartLineId) {
             const newQty = ci.quantity + delta;
             return newQty > 0 ? { ...ci, quantity: newQty } : null;
           }
@@ -83,9 +131,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = () => setCart([]);
 
   const totalCount = cart.reduce((sum, ci) => sum + ci.quantity, 0);
-  const totalPrice = cart.reduce((sum, ci) => sum + ci.item.price * ci.quantity, 0);
-  const totalCalories = cart.reduce((sum, ci) => sum + (ci.item.calories || 0) * ci.quantity, 0);
-  const totalProtein = cart.reduce((sum, ci) => sum + (ci.item.protein || 0) * ci.quantity, 0);
+  const totalPrice = cart.reduce((sum, ci) => {
+    const addOnsTotal = (ci.selectedAddOns || []).reduce(
+      (asum, a) => asum + a.price,
+      0
+    );
+    return sum + (ci.item.price + addOnsTotal) * ci.quantity;
+  }, 0);
+  const totalCalories = cart.reduce(
+    (sum, ci) => sum + (ci.item.calories || 0) * ci.quantity,
+    0
+  );
+  const totalProtein = cart.reduce(
+    (sum, ci) => sum + (ci.item.protein || 0) * ci.quantity,
+    0
+  );
 
   return (
     <CartContext.Provider
