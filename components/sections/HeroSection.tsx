@@ -177,10 +177,10 @@ export function HeroSection() {
               <div className="pt-1 sm:pt-2 flex items-center gap-5 sm:gap-6">
                 <div className="flex flex-col">
                   <span className="text-xs sm:text-sm font-body font-semibold text-[#6B685F] line-through">
-                    10$ (₹350)
+                    ₹350
                   </span>
                   <span className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-[#141412]">
-                    7,25$ <span className="text-base sm:text-lg font-bold text-[#2E5A36]">(₹295)</span>
+                    ₹295
                   </span>
                 </div>
 
