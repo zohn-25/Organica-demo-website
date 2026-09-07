@@ -30,6 +30,7 @@ import { formatINR } from '@/lib/utils';
 import { useToast } from '@/components/providers/ToastProvider';
 import { RESTAURANT_INFO } from '@/lib/constants';
 import { DishDetailModal } from '@/components/mobile/DishDetailModal';
+import { useFavorites } from '@/features/favorites/FavoritesContext';
 
 interface CategoryIconItem {
   id: MenuCategoryId;
@@ -57,11 +58,11 @@ export function MobileAppView() {
   const router = useRouter();
   const { addToCart } = useCart();
   const { showToast } = useToast();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<MenuCategoryId>('all');
   const [selectedSegment, setSelectedSegment] = useState<string>('all');
-  const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [addedItemIds, setAddedItemIds] = useState<Record<string, boolean>>({});
   const [selectedDishForModal, setSelectedDishForModal] = useState<MenuItem | null>(null);
   const [isDishModalOpen, setIsDishModalOpen] = useState(false);
@@ -69,20 +70,6 @@ export function MobileAppView() {
   const openDishDetail = (dish: MenuItem) => {
     setSelectedDishForModal(dish);
     setIsDishModalOpen(true);
-  };
-
-  // Toggle favorite
-  const toggleFavorite = (itemId: string, itemName: string) => {
-    setFavorites((prev) => {
-      const newState = !prev[itemId];
-      showToast({
-        type: newState ? 'success' : 'info',
-        title: newState ? 'Saved to Favorites' : 'Removed from Favorites',
-        message: `${itemName} ${newState ? 'added to your favorites' : 'removed'}.`,
-        duration: 2500,
-      });
-      return { ...prev, [itemId]: newState };
-    });
   };
 
   // Add to cart with feedback
@@ -349,7 +336,7 @@ export function MobileAppView() {
         {/* 2-Column Delivery App Card Grid matching reference right phone */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
           {popularItems.map((item) => {
-            const isFav = !!favorites[item.id];
+            const isFav = isFavorite(item.id);
             const isAdded = !!addedItemIds[item.id];
 
             return (
@@ -457,7 +444,7 @@ export function MobileAppView() {
 
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
           {trendingItems.map((item) => {
-            const isFav = !!favorites[item.id];
+            const isFav = isFavorite(item.id);
             const isAdded = !!addedItemIds[item.id];
 
             return (

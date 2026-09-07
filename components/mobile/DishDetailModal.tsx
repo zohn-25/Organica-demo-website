@@ -9,6 +9,7 @@ import { useCart, DishAddOn } from '@/features/cart/CartContext';
 import { DEFAULT_DISH_ADDONS } from '@/features/menu/data/addons-data';
 import { formatINR } from '@/lib/utils';
 import { useToast } from '@/components/providers/ToastProvider';
+import { useFavorites } from '@/features/favorites/FavoritesContext';
 
 interface DishDetailModalProps {
   dish: MenuItem | null;
@@ -26,10 +27,10 @@ export function DishDetailModal({
   const router = useRouter();
   const { addToCart } = useCart();
   const { showToast } = useToast();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const [quantity, setQuantity] = useState(1);
   const [selectedAddOns, setSelectedAddOns] = useState<Record<string, boolean>>({});
-  const [isFavorite, setIsFavorite] = useState(false);
   const [isAddedSuccess, setIsAddedSuccess] = useState(false);
 
   // Reset state when dish changes or opens
@@ -104,13 +105,13 @@ export function DishDetailModal({
 
             {/* Favorite button */}
             <button
-              onClick={() => setIsFavorite(!isFavorite)}
+              onClick={() => toggleFavorite(dish.id, dish.name)}
               className="w-9 h-9 rounded-full bg-white/25 hover:bg-white/35 backdrop-blur-md flex items-center justify-center text-white transition-all cursor-pointer active:scale-95 shadow-xs"
               aria-label="Add to favorites"
             >
               <Heart
                 className={`w-4.5 h-4.5 ${
-                  isFavorite ? 'fill-[#E11D48] text-[#E11D48]' : 'text-white'
+                  isFavorite(dish.id) ? 'fill-[#E11D48] text-[#E11D48]' : 'text-white'
                 }`}
               />
             </button>

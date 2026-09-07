@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CartDrawer } from '@/components/ui/CartDrawer';
 import { CartProvider } from '@/features/cart/CartContext';
+import { FavoritesProvider } from '@/features/favorites/FavoritesContext';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
@@ -86,16 +87,18 @@ export default function RootLayout({
       <body className="bg-[#FAF8F3] text-[#141412] antialiased selection:bg-[#F2B705] selection:text-[#141412]">
         <SmoothScrollProvider>
           <AuthProvider>
-            <CartProvider>
-              <ToastProvider>
-                <PageTransitionCurtain />
-                <Navbar />
-                <main className="min-h-screen">{children}</main>
-                <Footer />
-                <CartDrawer />
-                <MobileBottomNav />
-              </ToastProvider>
-            </CartProvider>
+            <ToastProvider>
+              <FavoritesProvider>
+                <CartProvider>
+                  <PageTransitionCurtain />
+                  <Navbar />
+                  <main className="min-h-screen">{children}</main>
+                  <Footer />
+                  <CartDrawer />
+                  <MobileBottomNav />
+                </CartProvider>
+              </FavoritesProvider>
+            </ToastProvider>
           </AuthProvider>
         </SmoothScrollProvider>
       </body>
