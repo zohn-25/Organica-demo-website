@@ -52,8 +52,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
           {/* Brand Column */}
           <div className="lg:col-span-5 space-y-5">
-            <div className="bg-[#FAF8F3] p-3 rounded-2xl inline-block">
-              <Logo />
+            <div className="inline-block py-1">
+              <Logo size="lg" />
             </div>
 
             <p className="text-xs sm:text-sm text-[#FAF8F3]/70 font-body leading-relaxed max-w-sm">

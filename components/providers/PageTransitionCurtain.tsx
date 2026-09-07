@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Sprout } from 'lucide-react';
 
 export function PageTransitionCurtain() {
   const pathname = usePathname();
@@ -90,20 +89,19 @@ export function PageTransitionCurtain() {
       {/* Centered Branded Emblem */}
       <div
         ref={logoRef}
-        className="flex flex-col items-center gap-3 opacity-0"
+        className="flex flex-col items-center gap-2.5 opacity-0 px-4"
         style={{ willChange: 'transform, opacity' }}
       >
-        <div className="w-14 h-14 rounded-2xl bg-[#2E5A36] flex items-center justify-center shadow-lg border border-[#3E7448]">
-          <Sprout className="w-7 h-7 text-[#F2B705]" />
+        <div className="rounded-xl overflow-hidden shadow-2xl border border-white/10">
+          <img
+            src="/images/logo.jpg"
+            alt="Organica"
+            className="h-10 sm:h-12 w-auto object-contain"
+          />
         </div>
-        <div className="flex flex-col items-center">
-          <span className="font-heading font-black text-xl tracking-widest text-[#FAF8F3] uppercase">
-            Organica
-          </span>
-          <span className="text-[10px] font-body tracking-[0.3em] text-[#A6A295] uppercase">
-            Plating Fresh Harvest
-          </span>
-        </div>
+        <span className="text-[10px] sm:text-xs font-body tracking-[0.3em] text-[#A6A295] uppercase font-semibold">
+          Clean Eating • Guwahati
+        </span>
       </div>
     </div>
   );
